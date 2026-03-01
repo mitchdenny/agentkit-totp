@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "s3DcvwCPIHE=",
+  "success": true,
+  "projectFilePath": "/home/midenn/agentkit-totp/src/AgentKit.Totp/AgentKit.Totp.csproj",
+  "expectedPackageFiles": [
+    "/home/midenn/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "/home/midenn/.nuget/packages/otp.net/1.4.1/otp.net.1.4.1.nupkg.sha512",
+    "/home/midenn/.nuget/packages/qrcoder/1.7.0/qrcoder.1.7.0.nupkg.sha512",
+    "/home/midenn/.nuget/packages/system.commandline/3.0.0-preview.1.26104.118/system.commandline.3.0.0-preview.1.26104.118.nupkg.sha512",
+    "/home/midenn/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512",
+    "/home/midenn/.nuget/packages/system.security.cryptography.protecteddata/10.0.3/system.security.cryptography.protecteddata.10.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
