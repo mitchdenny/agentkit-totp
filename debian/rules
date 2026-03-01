@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_build:
+	dotnet publish src/AgentKit.Totp -r linux-x64 -c Release -o $(CURDIR)/publish
+
+override_dh_auto_install:
+	install -D -m 0755 $(CURDIR)/publish/AgentKit.Totp $(CURDIR)/debian/agentkit-totp/usr/local/bin/totp

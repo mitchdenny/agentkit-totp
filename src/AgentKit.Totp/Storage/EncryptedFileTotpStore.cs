@@ -112,14 +112,14 @@ public class EncryptedFileTotpStore : ITotpStore
 
         var encrypted = await File.ReadAllBytesAsync(_storePath);
         var json = Decrypt(encrypted);
-        var store = JsonSerializer.Deserialize<StoreSchema>(json);
+        var store = JsonSerializer.Deserialize(json, StoreJsonContext.Default.StoreSchema);
         return store?.Entries ?? new Dictionary<string, TotpEntry>();
     }
 
     private async Task WriteStoreAsync(Dictionary<string, TotpEntry> entries)
     {
         var schema = new StoreSchema { Version = 1, Entries = entries };
-        var json = JsonSerializer.Serialize(schema, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(schema, StoreJsonContext.Default.StoreSchema);
         var encrypted = Encrypt(json);
         await File.WriteAllBytesAsync(_storePath, encrypted);
     }
@@ -156,11 +156,5 @@ public class EncryptedFileTotpStore : ITotpStore
     public async Task<IReadOnlyDictionary<string, TotpEntry>> ExportAllAsync()
     {
         return await ReadStoreAsync();
-    }
-
-    private class StoreSchema
-    {
-        public int Version { get; set; }
-        public Dictionary<string, TotpEntry> Entries { get; set; } = new();
     }
 }

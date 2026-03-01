@@ -1,0 +1,11 @@
+Package: agentkit-totp
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: mitchdenny <mitch@mitchdenny.com>
+Description: TOTP secret management for AI agents and humans
+ A command-line tool for managing TOTP secrets, built with
+ .NET NativeAOT for fast startup and minimal dependencies.
+ Supports adding, generating, listing, removing and exporting
+ TOTP entries with AES-GCM encrypted local storage.

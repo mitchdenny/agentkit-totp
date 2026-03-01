@@ -4,10 +4,6 @@ using System.Web;
 using AgentKit.Totp;
 using AgentKit.Totp.Storage;
 using OtpNet;
-using ZXing;
-using ZXing.ImageSharp;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 var store = new EncryptedFileTotpStore();
 var rootCommand = new RootCommand("agentkit-totp: TOTP secret management for AI agents and humans");
@@ -41,11 +37,9 @@ addCommand.SetAction(async (parseResult) =>
     }
     else if (qrFile != null)
     {
-        if (!qrFile.Exists) { Console.Error.WriteLine($"File not found: {qrFile.FullName}"); return; }
-        var decoded = DecodeQrCode(qrFile.FullName);
-        if (decoded == null) { Console.Error.WriteLine("Could not decode QR code from image."); return; }
-        entry = OtpAuthUriHelper.ParseOtpAuthUri(decoded);
-        if (entry == null) { Console.Error.WriteLine($"QR code did not contain a valid otpauth:// URI. Got: {decoded}"); return; }
+        Console.Error.WriteLine("QR code scanning is not available in this build (removed for NativeAOT compatibility).");
+        Console.Error.WriteLine("Use --uri or --secret instead.");
+        return;
     }
     else if (secret != null)
     {
@@ -171,14 +165,4 @@ static string BuildOtpAuthUri(string name, TotpEntry entry)
     return sb.ToString();
 }
 
-static string? DecodeQrCode(string imagePath)
-{
-    try
-    {
-        var reader = new ZXing.ImageSharp.BarcodeReader<Rgba32>();
-        using var image = Image.Load<Rgba32>(imagePath);
-        var result = reader.Decode(image);
-        return result?.Text;
-    }
-    catch { return null; }
-}
+
