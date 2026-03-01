@@ -49,6 +49,22 @@
           }
         }
       },
+      "SixLabors.ImageSharp/3.1.12": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/SixLabors.ImageSharp.props": {}
+        }
+      },
       "System.CommandLine/3.0.0-preview.1.26104.118": {
         "type": "package",
         "compile": {
@@ -147,6 +163,32 @@
         "build": {
           "buildTransitive/net8.0/_._": {}
         }
+      },
+      "ZXing.Net/0.16.11": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/zxing.dll": {
+            "related": ".XML"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/zxing.dll": {
+            "related": ".XML"
+          }
+        }
+      },
+      "ZXing.Net.Bindings.ImageSharp/0.16.16": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/ZXing.ImageSharp.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/ZXing.ImageSharp.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     }
   },
@@ -227,6 +269,22 @@
         "nuget-icon.png",
         "qrcoder.1.7.0.nupkg.sha512",
         "qrcoder.nuspec"
+      ]
+    },
+    "SixLabors.ImageSharp/3.1.12": {
+      "sha512": "iAg6zifihXEFS/t7fiHhZBGAdCp3FavsF4i2ZIDp0JfeYeDVzvmlbY1CNhhIKimaIzrzSi5M/NBFcWvZT2rB/A==",
+      "type": "package",
+      "path": "sixlabors.imagesharp/3.1.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "build/SixLabors.ImageSharp.props",
+        "lib/net6.0/SixLabors.ImageSharp.dll",
+        "lib/net6.0/SixLabors.ImageSharp.xml",
+        "sixlabors.imagesharp.128.png",
+        "sixlabors.imagesharp.3.1.12.nupkg.sha512",
+        "sixlabors.imagesharp.nuspec"
       ]
     },
     "System.CommandLine/3.0.0-preview.1.26104.118": {
@@ -347,21 +405,143 @@
         "system.security.cryptography.protecteddata.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "ZXing.Net/0.16.11": {
+      "sha512": "OZfAVu88hl87BffQ+rlWCj/vLvAhhCK4QnFaoveeF/MY8SjHNSYBQ3qyUEWlPKNgBQGh1syXhCDg10vUnCsqkg==",
+      "type": "package",
+      "path": "zxing.net/0.16.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "docs/README.md",
+        "lib/native/zxing.XML",
+        "lib/native/zxing.pri",
+        "lib/native/zxing.winmd",
+        "lib/net20-cf/zxing.ce2.0.dll",
+        "lib/net20-cf/zxing.ce2.0.xml",
+        "lib/net20/zxing.XML",
+        "lib/net20/zxing.dll",
+        "lib/net35-cf/zxing.ce3.5.dll",
+        "lib/net35-cf/zxing.ce3.5.xml",
+        "lib/net35/zxing.XML",
+        "lib/net35/zxing.dll",
+        "lib/net40/zxing.XML",
+        "lib/net40/zxing.dll",
+        "lib/net40/zxing.presentation.XML",
+        "lib/net40/zxing.presentation.dll",
+        "lib/net45/zxing.XML",
+        "lib/net45/zxing.dll",
+        "lib/net45/zxing.presentation.XML",
+        "lib/net45/zxing.presentation.dll",
+        "lib/net461/zxing.XML",
+        "lib/net461/zxing.dll",
+        "lib/net461/zxing.presentation.XML",
+        "lib/net461/zxing.presentation.dll",
+        "lib/net47/zxing.XML",
+        "lib/net47/zxing.dll",
+        "lib/net47/zxing.presentation.XML",
+        "lib/net47/zxing.presentation.dll",
+        "lib/net48/zxing.XML",
+        "lib/net48/zxing.dll",
+        "lib/net48/zxing.presentation.XML",
+        "lib/net48/zxing.presentation.dll",
+        "lib/net5.0/zxing.XML",
+        "lib/net5.0/zxing.dll",
+        "lib/net6.0/zxing.XML",
+        "lib/net6.0/zxing.dll",
+        "lib/net7.0/zxing.XML",
+        "lib/net7.0/zxing.dll",
+        "lib/net8.0/zxing.XML",
+        "lib/net8.0/zxing.dll",
+        "lib/net9.0/zxing.XML",
+        "lib/net9.0/zxing.dll",
+        "lib/netcoreapp3.0/zxing.dll",
+        "lib/netcoreapp3.0/zxing.xml",
+        "lib/netcoreapp3.1/zxing.dll",
+        "lib/netcoreapp3.1/zxing.xml",
+        "lib/netstandard1.0/zxing.dll",
+        "lib/netstandard1.0/zxing.xml",
+        "lib/netstandard1.1/zxing.dll",
+        "lib/netstandard1.1/zxing.xml",
+        "lib/netstandard1.3/zxing.dll",
+        "lib/netstandard1.3/zxing.xml",
+        "lib/netstandard2.0/zxing.dll",
+        "lib/netstandard2.0/zxing.xml",
+        "lib/netstandard2.1/zxing.dll",
+        "lib/netstandard2.1/zxing.xml",
+        "lib/portable-win+net40+sl4+sl5+wp7+wp71+wp8/zxing.portable.XML",
+        "lib/portable-win+net40+sl4+sl5+wp7+wp71+wp8/zxing.portable.dll",
+        "lib/sl3-wp/zxing.wp7.0.XML",
+        "lib/sl3-wp/zxing.wp7.0.dll",
+        "lib/sl4-wp71/zxing.wp7.1.XML",
+        "lib/sl4-wp71/zxing.wp7.1.dll",
+        "lib/sl4/zxing.sl4.XML",
+        "lib/sl4/zxing.sl4.dll",
+        "lib/sl5/zxing.sl5.XML",
+        "lib/sl5/zxing.sl5.dll",
+        "lib/uap10/zxing.dll",
+        "lib/uap10/zxing.pri",
+        "lib/uap10/zxing.xml",
+        "lib/windows8-managed/zxing.winrt.XML",
+        "lib/windows8-managed/zxing.winrt.dll",
+        "lib/windows8/zxing.XML",
+        "lib/windows8/zxing.pri",
+        "lib/windows8/zxing.winmd",
+        "lib/wp8/zxing.wp8.0.XML",
+        "lib/wp8/zxing.wp8.0.dll",
+        "logo.jpg",
+        "zxing.net.0.16.11.nupkg.sha512",
+        "zxing.net.nuspec"
+      ]
+    },
+    "ZXing.Net.Bindings.ImageSharp/0.16.16": {
+      "sha512": "RxcjK6rM6CsFECn0vaqQH10Vc+DyMkcCLLOLwVeeZhqSyJdp4v4J2/CF3ZereBo6ZAKQ+CdfK8G2tKG75zOcBw==",
+      "type": "package",
+      "path": "zxing.net.bindings.imagesharp/0.16.16",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net472/ZXing.ImageSharp.dll",
+        "lib/net472/ZXing.ImageSharp.pdb",
+        "lib/net472/ZXing.ImageSharp.xml",
+        "lib/netcoreapp2.1/ZXing.ImageSharp.dll",
+        "lib/netcoreapp2.1/ZXing.ImageSharp.pdb",
+        "lib/netcoreapp2.1/ZXing.ImageSharp.xml",
+        "lib/netcoreapp3.1/ZXing.ImageSharp.dll",
+        "lib/netcoreapp3.1/ZXing.ImageSharp.pdb",
+        "lib/netcoreapp3.1/ZXing.ImageSharp.xml",
+        "lib/netstandard1.3/ZXing.ImageSharp.dll",
+        "lib/netstandard1.3/ZXing.ImageSharp.pdb",
+        "lib/netstandard1.3/ZXing.ImageSharp.xml",
+        "lib/netstandard2.0/ZXing.ImageSharp.dll",
+        "lib/netstandard2.0/ZXing.ImageSharp.pdb",
+        "lib/netstandard2.0/ZXing.ImageSharp.xml",
+        "lib/netstandard2.1/ZXing.ImageSharp.dll",
+        "lib/netstandard2.1/ZXing.ImageSharp.pdb",
+        "lib/netstandard2.1/ZXing.ImageSharp.xml",
+        "logo.jpg",
+        "readme.md",
+        "zxing.net.bindings.imagesharp.0.16.16.nupkg.sha512",
+        "zxing.net.bindings.imagesharp.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
       "Otp.NET >= 1.4.1",
       "QRCoder >= 1.7.0",
+      "SixLabors.ImageSharp >= 3.1.12",
       "System.CommandLine >= 3.0.0-preview.1.26104.118",
-      "System.Security.Cryptography.ProtectedData >= 10.0.3"
+      "System.Security.Cryptography.ProtectedData >= 10.0.3",
+      "ZXing.Net >= 0.16.11",
+      "ZXing.Net.Bindings.ImageSharp >= 0.16.16"
     ]
   },
   "packageFolders": {
     "/home/midenn/.nuget/packages/": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "0.1.0",
     "restore": {
       "projectUniqueName": "/home/midenn/agentkit-totp/src/AgentKit.Totp/AgentKit.Totp.csproj",
       "projectName": "AgentKit.Totp",
@@ -411,6 +591,10 @@
             "target": "Package",
             "version": "[1.7.0, )"
           },
+          "SixLabors.ImageSharp": {
+            "target": "Package",
+            "version": "[3.1.12, )"
+          },
           "System.CommandLine": {
             "target": "Package",
             "version": "[3.0.0-preview.1.26104.118, )"
@@ -418,6 +602,14 @@
           "System.Security.Cryptography.ProtectedData": {
             "target": "Package",
             "version": "[10.0.3, )"
+          },
+          "ZXing.Net": {
+            "target": "Package",
+            "version": "[0.16.11, )"
+          },
+          "ZXing.Net.Bindings.ImageSharp": {
+            "target": "Package",
+            "version": "[0.16.16, )"
           }
         },
         "imports": [
