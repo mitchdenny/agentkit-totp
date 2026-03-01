@@ -5,5 +5,6 @@ public record TotpEntry(
     string? Issuer = null,
     string? Account = null,
     int Digits = 6,
-    int Period = 30
+    int Period = 30,
+    string Algorithm = "SHA1"
 );

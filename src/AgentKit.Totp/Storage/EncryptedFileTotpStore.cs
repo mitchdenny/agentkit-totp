@@ -51,7 +51,7 @@ public class EncryptedFileTotpStore : ITotpStore
         return $"{Environment.UserName}@{Environment.MachineName}";
     }
 
-    private byte[] DeriveKey()
+    internal byte[] DeriveKey()
     {
         var salt = GetOrCreateSalt();
         var machineId = GetMachineId();
@@ -59,36 +59,50 @@ public class EncryptedFileTotpStore : ITotpStore
         return Rfc2898DeriveBytes.Pbkdf2(password, salt, Pbkdf2Iterations, HashAlgorithmName.SHA256, KeySize);
     }
 
-    private byte[] Encrypt(string plaintext)
+    internal byte[] Encrypt(string plaintext)
     {
         var key = DeriveKey();
-        var nonce = RandomNumberGenerator.GetBytes(NonceSize);
-        var plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
-        var ciphertext = new byte[plaintextBytes.Length];
-        var tag = new byte[TagSize];
+        try
+        {
+            var nonce = RandomNumberGenerator.GetBytes(NonceSize);
+            var plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
+            var ciphertext = new byte[plaintextBytes.Length];
+            var tag = new byte[TagSize];
 
-        using var aes = new AesGcm(key, TagSize);
-        aes.Encrypt(nonce, plaintextBytes, ciphertext, tag);
+            using var aes = new AesGcm(key, TagSize);
+            aes.Encrypt(nonce, plaintextBytes, ciphertext, tag);
 
-        // Format: nonce (12) + tag (16) + ciphertext
-        var result = new byte[NonceSize + TagSize + ciphertext.Length];
-        Buffer.BlockCopy(nonce, 0, result, 0, NonceSize);
-        Buffer.BlockCopy(tag, 0, result, NonceSize, TagSize);
-        Buffer.BlockCopy(ciphertext, 0, result, NonceSize + TagSize, ciphertext.Length);
-        return result;
+            // Format: nonce (12) + tag (16) + ciphertext
+            var result = new byte[NonceSize + TagSize + ciphertext.Length];
+            Buffer.BlockCopy(nonce, 0, result, 0, NonceSize);
+            Buffer.BlockCopy(tag, 0, result, NonceSize, TagSize);
+            Buffer.BlockCopy(ciphertext, 0, result, NonceSize + TagSize, ciphertext.Length);
+            return result;
+        }
+        finally
+        {
+            Array.Clear(key);
+        }
     }
 
-    private string Decrypt(byte[] data)
+    internal string Decrypt(byte[] data)
     {
         var key = DeriveKey();
-        var nonce = data[..NonceSize];
-        var tag = data[NonceSize..(NonceSize + TagSize)];
-        var ciphertext = data[(NonceSize + TagSize)..];
-        var plaintext = new byte[ciphertext.Length];
+        try
+        {
+            var nonce = data[..NonceSize];
+            var tag = data[NonceSize..(NonceSize + TagSize)];
+            var ciphertext = data[(NonceSize + TagSize)..];
+            var plaintext = new byte[ciphertext.Length];
 
-        using var aes = new AesGcm(key, TagSize);
-        aes.Decrypt(nonce, ciphertext, tag, plaintext);
-        return Encoding.UTF8.GetString(plaintext);
+            using var aes = new AesGcm(key, TagSize);
+            aes.Decrypt(nonce, ciphertext, tag, plaintext);
+            return Encoding.UTF8.GetString(plaintext);
+        }
+        finally
+        {
+            Array.Clear(key);
+        }
     }
 
     private async Task<Dictionary<string, TotpEntry>> ReadStoreAsync()
@@ -110,9 +124,11 @@ public class EncryptedFileTotpStore : ITotpStore
         await File.WriteAllBytesAsync(_storePath, encrypted);
     }
 
-    public async Task AddAsync(string name, TotpEntry entry)
+    public async Task AddAsync(string name, TotpEntry entry, bool force = false)
     {
         var entries = await ReadStoreAsync();
+        if (!force && entries.ContainsKey(name))
+            throw new InvalidOperationException($"Entry '{name}' already exists. Use --force to overwrite.");
         entries[name] = entry;
         await WriteStoreAsync(entries);
     }

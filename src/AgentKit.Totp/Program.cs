@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.Text;
 using System.Web;
+using AgentKit.Totp;
 using AgentKit.Totp.Storage;
 using OtpNet;
 using ZXing;
@@ -17,22 +18,25 @@ var addName    = new Argument<string>("name") { Description = "Name for this ent
 var addUri     = new Option<string?>("--uri")    { Description = "otpauth:// URI" };
 var addSecret  = new Option<string?>("--secret") { Description = "Base32-encoded TOTP secret" };
 var addQr      = new Option<FileInfo?>("--qr")   { Description = "Path to QR code image file" };
+var addForce   = new Option<bool>("--force")      { Description = "Overwrite existing entry" };
 addCommand.Add(addName);
 addCommand.Add(addUri);
 addCommand.Add(addSecret);
 addCommand.Add(addQr);
+addCommand.Add(addForce);
 addCommand.SetAction(async (parseResult) =>
 {
     var name   = parseResult.GetValue(addName)!;
     var uri    = parseResult.GetValue(addUri);
     var secret = parseResult.GetValue(addSecret);
     var qrFile = parseResult.GetValue(addQr);
+    var force  = parseResult.GetValue(addForce);
 
     TotpEntry? entry = null;
 
     if (uri != null)
     {
-        entry = ParseOtpAuthUri(uri);
+        entry = OtpAuthUriHelper.ParseOtpAuthUri(uri);
         if (entry == null) { Console.Error.WriteLine("Invalid otpauth:// URI."); return; }
     }
     else if (qrFile != null)
@@ -40,7 +44,7 @@ addCommand.SetAction(async (parseResult) =>
         if (!qrFile.Exists) { Console.Error.WriteLine($"File not found: {qrFile.FullName}"); return; }
         var decoded = DecodeQrCode(qrFile.FullName);
         if (decoded == null) { Console.Error.WriteLine("Could not decode QR code from image."); return; }
-        entry = ParseOtpAuthUri(decoded);
+        entry = OtpAuthUriHelper.ParseOtpAuthUri(decoded);
         if (entry == null) { Console.Error.WriteLine($"QR code did not contain a valid otpauth:// URI. Got: {decoded}"); return; }
     }
     else if (secret != null)
@@ -56,8 +60,15 @@ addCommand.SetAction(async (parseResult) =>
     try { Base32Encoding.ToBytes(entry.Secret); }
     catch { Console.Error.WriteLine("Invalid base32 secret."); return; }
 
-    await store.AddAsync(name, entry);
-    Console.WriteLine($"✓ Added '{name}'");
+    try
+    {
+        await store.AddAsync(name, entry, force);
+        Console.WriteLine($"✓ Added '{name}'");
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.Error.WriteLine(ex.Message);
+    }
 });
 
 // ── totp get ──────────────────────────────────────────────────────────────────
@@ -75,7 +86,13 @@ getCommand.SetAction(async (parseResult) =>
     if (entry == null) { Console.Error.WriteLine($"No entry found: '{name}'"); return; }
 
     var keyBytes = Base32Encoding.ToBytes(entry.Secret);
-    var totp = new OtpNet.Totp(keyBytes, entry.Period, OtpHashMode.Sha1, entry.Digits);
+    var hashMode = entry.Algorithm.ToUpperInvariant() switch
+    {
+        "SHA256" => OtpHashMode.Sha256,
+        "SHA512" => OtpHashMode.Sha512,
+        _ => OtpHashMode.Sha1
+    };
+    var totp = new OtpNet.Totp(keyBytes, entry.Period, hashMode, entry.Digits);
 
     if (!watch)
     {
@@ -143,21 +160,6 @@ rootCommand.Add(exportCommand);
 return await rootCommand.Parse(args).InvokeAsync();
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-static TotpEntry? ParseOtpAuthUri(string uri)
-{
-    if (!uri.StartsWith("otpauth://totp/", StringComparison.OrdinalIgnoreCase)) return null;
-    var u = new Uri(uri);
-    var query = HttpUtility.ParseQueryString(u.Query);
-    var secret = query["secret"];
-    if (string.IsNullOrWhiteSpace(secret)) return null;
-    var path    = Uri.UnescapeDataString(u.AbsolutePath.TrimStart('/'));
-    var issuer  = query["issuer"] ?? (path.Contains(':') ? path.Split(':')[0] : null);
-    var account = path.Contains(':') ? path.Split(':')[1] : path;
-    _ = int.TryParse(query["digits"], out var digits); if (digits == 0) digits = 6;
-    _ = int.TryParse(query["period"], out var period); if (period == 0) period = 30;
-    return new TotpEntry(secret.ToUpperInvariant().Replace(" ", ""), issuer, account, digits, period);
-}
-
 static string BuildOtpAuthUri(string name, TotpEntry entry)
 {
     var label = Uri.EscapeDataString(entry.Issuer != null ? $"{entry.Issuer}:{entry.Account ?? name}" : name);
@@ -165,6 +167,7 @@ static string BuildOtpAuthUri(string name, TotpEntry entry)
     if (entry.Issuer != null) sb.Append($"&issuer={Uri.EscapeDataString(entry.Issuer)}");
     if (entry.Digits != 6)   sb.Append($"&digits={entry.Digits}");
     if (entry.Period != 30)  sb.Append($"&period={entry.Period}");
+    if (entry.Algorithm != "SHA1") sb.Append($"&algorithm={entry.Algorithm}");
     return sb.ToString();
 }
 
